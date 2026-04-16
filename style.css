@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0a0a0a;
+  color: white;
+}
+
+.container {
+  display: flex;
+}
+
+.form-section {
+  width: 40%;
+  padding: 20px;
+  background: #111;
+}
+
+input, textarea {
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #444;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border: none;
+  cursor: pointer;
+}
+
+.preview-section {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+}
+
+.resume {
+  background: white;
+  color: black;
+  width: 700px;
+  padding: 40px;
+  font-family: 'Times New Roman';
+  line-height: 1.5;
+}
+
+.header {
+  text-align: center;
+}
+
+.section {
+  margin-top: 18px;
+}
+
+.section h3 {
+  font-size: 14px;
+  border-bottom: 1px solid black;
+  margin-bottom: 6px;
+  padding-bottom: 2px;
+}
+
+.project-card, .custom-section-card {
+  background: #1a1a1a;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.edu-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.header p {
+  font-size: 13px;
+  margin-top: 5px;
+}

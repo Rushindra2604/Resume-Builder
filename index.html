@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Resume Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="form-section">
+
+      <h2>Smart Resume Builder</h2>
+
+      <input id="name" placeholder="Name">
+      <input id="email" placeholder="Email">
+      <input id="phone" placeholder="Phone">
+      <input id="linkedin" placeholder="LinkedIn">
+      <input id="github" placeholder="GitHub">
+
+      <textarea id="summary" placeholder="Professional Summary"></textarea>
+      <button onclick="generateSummary()">✨ Generate Summary</button>
+
+      <textarea id="skills" placeholder="Skills (comma or line separated)"></textarea>
+      <textarea id="education" placeholder="Education"></textarea>
+
+      <h3>Projects</h3>
+      <div id="projectsContainer"></div>
+      <button onclick="addProject()">+ Add Project</button>
+
+      <h3>Custom Sections</h3>
+      <div id="customSectionsContainer"></div>
+      <button onclick="addCustomSection()">+ Add Section</button>
+
+      <button onclick="downloadPDF()">⬇ Download PDF</button>
+
+    </div>
+
+    <div class="preview-section">
+
+      <div class="resume" id="resumePreview">
+
+        <div class="header">
+          <h1 id="previewName">Your Name</h1>
+          <p id="previewContact"></p>
+        </div>
+
+        <div class="section">
+          <h3>SUMMARY</h3>
+          <p id="previewSummary"></p>
+        </div>
+
+        <div class="section">
+          <h3>EDUCATION</h3>
+          <p id="previewEducation"></p>
+        </div>
+
+        <div class="section">
+          <h3>SKILLS</h3>
+          <ul id="previewSkills"></ul>
+        </div>
+
+        <div class="section">
+          <h3>PROJECTS</h3>
+          <div id="previewProjects"></div>
+        </div>
+
+        <div id="previewCustomSections"></div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
