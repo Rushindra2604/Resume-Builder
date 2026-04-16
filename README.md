@@ -21,3 +21,5 @@ An AI-powered resume builder that generates professional resumes using Gemini AP
 1. Clone repo
 2. npm install
 3. node server.js
+
+⚠️ Note: Backend is currently running locally. Frontend is deployed on Vercel.
