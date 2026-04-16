@@ -4,101 +4,88 @@ let resumeData = {
   projects: [], customSections: []
 };
 
-const inputs = document.querySelectorAll("input, textarea");
-inputs.forEach(i => i.addEventListener("input", updateData));
+// INPUT LISTENER
+document.querySelectorAll("input, textarea").forEach(input => {
+  input.addEventListener("input", updateData);
+});
 
 function updateData() {
   resumeData.name = document.getElementById("name").value;
-
-  console.log("Name value:", resumeData.name);
-
-  resumeData.email = email.value;
-  resumeData.phone = phone.value;
-  resumeData.linkedin = linkedin.value;
-  resumeData.github = github.value;
-  resumeData.summary = summary.value;
-  resumeData.skills = skills.value;
-  resumeData.education = education.value;
+  resumeData.email = document.getElementById("email").value;
+  resumeData.phone = document.getElementById("phone").value;
+  resumeData.linkedin = document.getElementById("linkedin").value;
+  resumeData.github = document.getElementById("github").value;
+  resumeData.summary = document.getElementById("summary").value;
+  resumeData.skills = document.getElementById("skills").value;
+  resumeData.education = document.getElementById("education").value;
 
   updatePreview();
 }
 
+// ROLE DETECTION
+function detectRole(skills) {
+  const s = skills.toLowerCase();
+
+  if (s.includes("react") || s.includes("html") || s.includes("css")) return "frontend developer";
+  if (s.includes("node") || s.includes("mongodb")) return "backend developer";
+  if (s.includes("python") || s.includes("java")) return "software developer";
+
+  return "developer";
+}
+
+// PREVIEW
 function updatePreview() {
   document.getElementById("previewName").textContent =
-    resumeData.name.trim() !== "" ? resumeData.name : "Your Name";
+    resumeData.name || "Your Name";
 
-  // ✅ FIXED CONTACT DISPLAY
-  previewContact.textContent =
-    `${resumeData.email} | ${resumeData.phone} | ${resumeData.linkedin} | ${resumeData.github}`;
+  document.getElementById("previewContact").textContent =
+    `${resumeData.email || ""} ${resumeData.phone ? "| " + resumeData.phone : ""} ${resumeData.linkedin ? "| " + resumeData.linkedin : ""} ${resumeData.github ? "| " + resumeData.github : ""}`;
 
-  previewSummary.innerHTML = resumeData.summary.replace(/\n/g, "<br>");
+  document.getElementById("previewSummary").innerHTML =
+    resumeData.summary.replace(/\n/g, "<br>");
 
-  // skills
+  // SKILLS
   const skillsList = document.getElementById("previewSkills");
   skillsList.innerHTML = "";
 
-  const skillsArray = resumeData.skills
-    .split(/,|\n/)
-    .map(s => s.trim())
-    .filter(s => s);
-
-  // normalize
+  const skillsArray = resumeData.skills.split(/,|\n/).map(s => s.trim()).filter(s => s);
   const lowerSkills = skillsArray.map(s => s.toLowerCase());
 
-  // categories
-  let frontend = [];
-  let backend = [];
-  let tools = [];
-  let languages = [];
-  let others = [];
+  let frontend = [], backend = [], tools = [], languages = [], others = [];
 
-  lowerSkills.forEach((skill, index) => {
-
-    if (["html", "css", "react", "javascript", "bootstrap"].includes(skill)) {
-      frontend.push(skillsArray[index]);
-    }
-    else if (["node", "express", "mongodb", "mysql"].includes(skill)) {
-      backend.push(skillsArray[index]);
-    }
-    else if (["git", "github", "vscode", "postman"].includes(skill)) {
-      tools.push(skillsArray[index]);
-    }
-    else if (["python", "java", "c", "c++"].includes(skill)) {
-      languages.push(skillsArray[index]);
-    }
-    else {
-      others.push(skillsArray[index]);
-    }
-
+  lowerSkills.forEach((skill, i) => {
+    if (["html", "css", "react", "javascript"].includes(skill)) frontend.push(skillsArray[i]);
+    else if (["node", "express", "mongodb"].includes(skill)) backend.push(skillsArray[i]);
+    else if (["git", "github", "vscode"].includes(skill)) tools.push(skillsArray[i]);
+    else if (["python", "java", "c", "c++"].includes(skill)) languages.push(skillsArray[i]);
+    else others.push(skillsArray[i]);
   });
 
-  // render function
   function addSkill(title, arr) {
-    if (arr.length > 0) {
+    if (arr.length) {
       const li = document.createElement("li");
       li.innerHTML = `<b>${title}:</b> ${arr.join(", ")}`;
       skillsList.appendChild(li);
     }
   }
 
-  // render in order
   addSkill("Languages", languages);
   addSkill("Frontend", frontend);
   addSkill("Backend", backend);
   addSkill("Tools", tools);
   addSkill("Others", others);
 
+  // EDUCATION
   const eduLines = resumeData.education.split("\n");
-
-  let formattedEdu = "";
+  let eduHTML = "";
 
   eduLines.forEach(line => {
     if (line.trim()) {
-      formattedEdu += `<div class="edu-line">${line}</div>`;
+      eduHTML += `<div class="edu-line">${line}</div>`;
     }
   });
 
-  document.getElementById("previewEducation").innerHTML = formattedEdu;
+  document.getElementById("previewEducation").innerHTML = eduHTML;
 
   updateProjectsPreview();
   updateCustomPreview();
@@ -124,7 +111,6 @@ function addProject() {
 
   container.appendChild(card);
 
-  // IMPORTANT: attach listeners
   card.querySelectorAll("input, textarea").forEach(input => {
     input.addEventListener("input", updateProjects);
   });
@@ -145,13 +131,16 @@ function updateProjects() {
 }
 
 function updateProjectsPreview() {
-  previewProjects.innerHTML = "";
+  const preview = document.getElementById("previewProjects");
+  preview.innerHTML = "";
 
   resumeData.projects.forEach(p => {
     const div = document.createElement("div");
 
     const bullets = p.desc
       .split("\n")
+      .map(d => d.replace(/^•\s*/, "").trim()) // REMOVE manual bullets
+      .filter(d => d)
       .map(d => `<li>${d}</li>`)
       .join("");
 
@@ -161,7 +150,7 @@ function updateProjectsPreview() {
       <ul>${bullets}</ul>
     `;
 
-    previewProjects.appendChild(div);
+    preview.appendChild(div);
   });
 }
 
@@ -176,8 +165,11 @@ function addCustomSection() {
     <button onclick="deleteCard(this)">❌</button>
   `;
 
-  customSectionsContainer.appendChild(card);
-  card.querySelectorAll("input,textarea").forEach(i => i.addEventListener("input", updateCustomSections));
+  document.getElementById("customSectionsContainer").appendChild(card);
+
+  card.querySelectorAll("input, textarea").forEach(i =>
+    i.addEventListener("input", updateCustomSections)
+  );
 }
 
 function updateCustomSections() {
@@ -194,13 +186,16 @@ function updateCustomSections() {
 }
 
 function updateCustomPreview() {
-  previewCustomSections.innerHTML = "";
+  const container = document.getElementById("previewCustomSections");
+  container.innerHTML = "";
 
   resumeData.customSections.forEach(s => {
     const div = document.createElement("div");
 
     const bullets = s.content
       .split("\n")
+      .map(line => line.trim())
+      .filter(line => line)
       .map(line => `<li>${line}</li>`)
       .join("");
 
@@ -211,7 +206,7 @@ function updateCustomPreview() {
       </div>
     `;
 
-    previewCustomSections.appendChild(div);
+    container.appendChild(div);
   });
 }
 
@@ -223,38 +218,62 @@ function deleteCard(btn) {
 
 // PDF
 function downloadPDF() {
-  html2pdf().from(resumePreview).save();
+  try {
+    html2pdf().from(document.getElementById("resumePreview")).save();
+  } catch {
+    alert("Download failed");
+  }
 }
 
-// 🤖 AI SUMMARY (FREE MOCK FOR NOW)
+// AI SUMMARY
 function generateSummary() {
-  const nameVal = name.value || "a fresher";
+  const name = document.getElementById("name").value || "A motivated fresher";
+  const skills = document.getElementById("skills").value;
 
-  const text = `Motivated and detail-oriented developer with strong foundation in web technologies. Passionate about building user-friendly applications and solving real-world problems. Eager to learn, grow, and contribute effectively in a dynamic team environment.`;
-
-  summary.value = text;
-  updateData();
-}
-
-function generateProjectAI(btn) {
-  const card = btn.parentElement.parentElement;
-
-  const title = card.querySelector(".title").value;
-  const tech = card.querySelector(".tech").value;
-
-  if (!title && !tech) {
-    alert("Enter project title or tech first");
+  if (!skills) {
+    alert("Enter skills first");
     return;
   }
 
-  // 🔥 Mock AI (works without API)
-  const text = `
-• Developed a ${title || "web application"} using ${tech || "modern technologies"}
-• Designed responsive UI and improved user experience
-• Implemented optimized and scalable functionality
-`;
+  const role = detectRole(skills);
+  const skillList = skills.split(/,|\n/).map(s => s.trim()).filter(s => s);
+  const mainSkills = skillList.slice(0, 3).join(", ");
 
-  card.querySelector(".desc").value = text.trim();
+  const templates = [
+    `${name} is a passionate ${role} with strong knowledge of ${mainSkills}. Focused on building responsive applications.`,
+    `Aspiring ${role} skilled in ${mainSkills}. Interested in solving real-world problems.`,
+    `${name} is an enthusiastic ${role} with expertise in ${mainSkills}. Eager to contribute to development teams.`
+  ];
 
-  updateProjects(); // VERY IMPORTANT
+  document.getElementById("summary").value =
+    templates[Math.floor(Math.random() * templates.length)];
+
+  updateData();
+}
+
+// AI PROJECT
+function generateProjectAI(btn) {
+  const card = btn.parentElement.parentElement;
+
+  const title = card.querySelector(".title").value || "web application";
+  const tech = card.querySelector(".tech").value || "modern technologies";
+
+  const templates = [
+`Developed a ${title} using ${tech}
+Designed responsive UI and improved user experience
+Optimized performance and functionality`,
+
+`Built ${title} with ${tech}
+Focused on clean design and usability
+Implemented efficient features`,
+
+`Created ${title} using ${tech}
+Ensured responsiveness across devices
+Enhanced application performance`
+  ];
+
+  card.querySelector(".desc").value =
+    templates[Math.floor(Math.random() * templates.length)];
+
+  updateProjects();
 }
