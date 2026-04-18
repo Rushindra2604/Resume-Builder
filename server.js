@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = "AIzaSyCv8fYGe3NwXHIByy7yMV1U1ne_7ZDgJsQ";
+const API_KEY = "PASTE YOUR API";
 
 // ===== ROUTE =====
 app.post("/generate", async (req, res) => {
